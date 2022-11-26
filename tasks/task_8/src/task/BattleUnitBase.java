@@ -1,103 +1,105 @@
 package task;
 
 public abstract class BattleUnitBase implements BattleUnit {
-    //fields
-    //------------------------------------------------------------
+    /*
+     *   Конструктор:
+     *       - принимающий в качестве параметров имя, макс. здоровье, базо-
+     *         вую силу, макс. броню.
+     *   Абстрактные методы:
+     *       void specialAbility(BattleUnit[] ownTeam, BattleUnit[] enemyTeam)
+     *       void attack(BattleUnit other)
+     *   Дополнительно:
+     *       - все остальные методы должны быть реализованы
+     *       - минимальный уровень здоровья - 0
+     *       - минимальный уровень брони - 0
+     *       - здоровье и броня ни в какой момент не могут быть больше
+     *         максимального уровня
+     * ---------------------------------------------------------------------
+     */
+    protected String charName;
+    protected  int maxHealth;
+    protected  int baseStrength;
+    protected  int maxArmor;
+    protected  int Health;
+    protected  int Strength;
+    protected  int Armor;
 
-    public int health, str, armor, maxHealth, maxArmor, baseStr;
-    public String name;
 
-    //constructor
-    //------------------------------------------------------------
 
-    public BattleUnitBase(String name, int maxHealth, int baseStr, int maxArmor){
-        this.name = name;
-        this.maxHealth = maxHealth;
-        this.health = maxHealth();
-        this.baseStr = baseStr;
-        this.str = baseStrength();
-        this.maxArmor = maxArmor;
-        this.armor = maxArmor();
-    }
 
-    //abstract methods
-    //------------------------------------------------------------
 
-    public abstract void specialAbility(BattleUnit[] ownTeam, BattleUnit[] enemyTeam);
-    public abstract void attack(BattleUnit other);
-
-    //methods
-    //------------------------------------------------------------
-
-    @Override // <-- this is for "reading" abstract methods from interface;
-    public String name(){
-        return this.name;
-    }
-
-    @Override
-    public int health(){
-        return this.health;
+    public BattleUnitBase(String charName, int maxHealth, int baseStrength, int maxArmor) {
+        this.charName = charName;
+        this.Health = this.maxHealth = maxHealth;
+        this.Strength = this.baseStrength = baseStrength;
+        this.Armor = this.maxArmor = maxArmor;
     }
 
     @Override
-    public int maxHealth(){
+    public String name() {
+        return this.charName;
+    }
+
+    @Override
+    public int health() {
+        return this.Health;
+    }
+
+    @Override
+    public int maxHealth() {
         return this.maxHealth;
     }
 
     @Override
-    public void setMaxHealth(int value){
-        this.maxHealth = value;
-        this.health = this.health > this.maxHealth ? this.maxHealth : this.health; // <- termary operator
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
+        this.Health = Math.min(this.Health, this.maxHealth);
     }
 
     @Override
-    public void heal(int value){
-        this.health = this.health + value > this.maxHealth ? this.maxHealth : this.health + value;
+    public void heal(int value) {
+        this.Health = Math.max(Math.min(this.health() + value, this.maxHealth() ), 0);
     }
 
     @Override
-    public void takeDamage(int value){
-        this.health = this.health - value < 0 ? 0 : this.health - value;
+    public int strength() {
+        return this.Strength;
     }
 
     @Override
-    public int strength(){
-        return this.str;
+    public void setStrength(int value) {
+        this.Strength = value;
     }
 
     @Override
-    public void setStrength(int value){
-        this.str = value;
+    public int baseStrength() {
+        return this.baseStrength;
     }
 
     @Override
-    public int baseStrength(){
-        return this.baseStr;
+    public int armor() {
+        return this.Armor;
     }
 
     @Override
-    public int armor(){
-        return this.armor;
+    public void restoreArmor(int value) {
+        this.Armor = Math.max(Math.min(this.armor() + value, this.maxArmor() ), 0);
     }
 
     @Override
-    public void restoreArmor(int value){
-        this.armor = this.armor + value > maxArmor ? maxArmor : this.armor + value;
-    }
-
-    @Override
-    public void damageArmor(int value){
-        this.armor = this.armor - value < 0 ? 0 : this.armor - value;
-    }
-
-    @Override
-    public int maxArmor(){
+    public int maxArmor() {
         return this.maxArmor;
     }
 
     @Override
-    public void setMaxArmor(int value){
+    public void setMaxArmor(int value) {
         this.maxArmor = value;
-        this.armor = this.armor > this.maxArmor ? this.maxArmor : this.armor;
+        this.Armor = Math.min(this.Armor, this.maxArmor);
     }
+
+    @Override
+    public abstract void specialAbility(BattleUnit[] ownTeam, BattleUnit[] enemyTeam);
+
+    @Override
+    public abstract void attack(BattleUnit other);
 }

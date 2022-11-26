@@ -1,29 +1,17 @@
 package task;
 
 public class Infantryman extends BattleUnitBase {
-    //constructor
-    //------------------------------------------------------------
-
-    public Infantryman(String name, int maxHealth, int baseStrength, int maxArmor){
-        super(name, maxHealth, baseStrength, maxArmor);
+    public Infantryman(String charName, int maxHealth, int baseStrength, int maxArmor) {
+        super(charName, maxHealth, baseStrength, maxArmor);
     }
-
-    //methods
-    //------------------------------------------------------------
+    @Override
+    public void specialAbility(BattleUnit[] ownTeam, BattleUnit[] enemyTeam) {}
 
     @Override
-    public void specialAbility(BattleUnit[] ownTeam, BattleUnit[] enemyTeam){}
-
-    @Override
-    public void attack(BattleUnit enemy){
-        double halfDamage = this.str/2 < 1 ? 1 : this.str/2;
-        double quarterDamage = this.str/4 < 1 ? 1 : this.str/4;
-
-        if(enemy.armor() == 0)
-            enemy.takeDamage(this.str);
-        else {
-            enemy.takeDamage((int) halfDamage);
-            enemy.damageArmor((int) quarterDamage);
-        }
+    public void attack(BattleUnit other) {
+        if (other.armor() > 0) {
+            other.takeDamage(Math.max(this.strength() / 2, 1));
+            other.damageArmor(Math.max(this.strength() / 4, 1));
+        } else other.takeDamage(this.strength());
     }
 }

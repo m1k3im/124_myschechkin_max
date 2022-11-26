@@ -1,40 +1,33 @@
 package task;
 
 public class ArmorDestroyer extends BattleUnitBase {
-    //constructor
-    //------------------------------------------------------------
-
-    public ArmorDestroyer(String name, int maxHealth, int baseStrength, int maxArmor){
-        super(name, maxHealth, baseStrength, maxArmor);
+    public ArmorDestroyer(String charName, int maxHealth, int baseStrength, int maxArmor) {
+        super(charName, maxHealth, baseStrength, maxArmor);
     }
 
-    //methods
-    //------------------------------------------------------------
-
     @Override
-    public void specialAbility(BattleUnit[] ownTeam, BattleUnit[] enemyTeam){
-        int selectEnemy = 0, maxArmor = 0; //base "max"-armor enemy
-        for(int i = 0; i < enemyTeam.length; i++){
-            BattleUnit enemy = enemyTeam[i];
-            if(enemy.health() > 0 && enemy.armor() > maxArmor){
-                selectEnemy = i;
-                maxArmor = enemy.armor();
+    public void specialAbility(BattleUnit[] ownTeam, BattleUnit[] enemyTeam) {
+        int prevArmor = Integer.MIN_VALUE, index = 0;
+        for (int i = 0; i < enemyTeam.length; i++) {
+            if (enemyTeam[i].health() <= 0) continue;
+            final int enemyArmor = enemyTeam[i].armor();
+            if (prevArmor < enemyArmor) {
+                prevArmor = enemyArmor;
+                index = i;
             }
         }
-        double doubleDamage = this.str*2 < 1 ? 1 : this.str*2, quarterDamage = this.str/4 < 1 ? 1 : this.str/4;
-        if(maxArmor > 0)
-            enemyTeam[selectEnemy].damageArmor((int) doubleDamage);
-        else
-            enemyTeam[selectEnemy].takeDamage((int) quarterDamage);
-    }
-
-    @Override
-    public void attack(BattleUnit enemy){
-        double halfDamage = this.str/2 < 1 ? 1 : this.str/2, quarterDamage = this.str/4 < 1 ? 1 : this.str/4;
-        if(enemy.armor() > 0){
-            enemy.takeDamage((int) quarterDamage);
-            enemy.damageArmor(this.str);
+        final BattleUnit enemy = enemyTeam[index];
+        if (enemy.armor() > 0) {
+            enemy.damageArmor(2 * this.strength() );
         } else
-            enemy.takeDamage((int) halfDamage);
+            enemy.takeDamage(Math.max(this.strength() / 4, 1) );
+    }
+    @Override
+    public void attack(BattleUnit other) {
+        if (other.armor() > 0) {
+            other.takeDamage(Math.max(this.strength() / 4, 1) );
+            other.damageArmor(this.strength() );
+        } else
+            other.takeDamage(Math.max(this.strength() / 2, 1) );
     }
 }
