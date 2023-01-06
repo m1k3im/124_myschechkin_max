@@ -17,19 +17,19 @@ public class Student {
         return this.name;
     }
 
-    public void Set_group(){
+    public void Set_group(String group){
         this.group=group;
     }
     public String Get_group(){
         return this.group;
     }
 
-    public void Set_age(){
+    public void Set_age(int age){
         this.age=age;
     }
     public int Get_age(){ return this.age; }
 
-    public void Set_mean_score(){
+    public void Set_mean_score(double mean_score){
         this.mean_score=mean_score;
     }
     public double Get_mean_score(){
